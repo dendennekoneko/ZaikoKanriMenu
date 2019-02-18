@@ -2,6 +2,7 @@ package 在庫管理システム;
 
 import java.awt.Color;
 import java.awt.Label;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -15,18 +16,18 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 //ウィンドウのひな型
-public abstract class Result_Window extends JFrame implements ActionListener {
+public class Result extends Result_Window {
 	
 	private static final long serialVersionUID = 1L;
 	
 	Label l_1,l_2;
-	static Label l_error;
-	JTextField t_shocd;
-	JTextField t_shoname;
+	
+	List<String>  columns = new ArrayList<String>(Arrays.asList("Apple", "Orange", "Melon"));
+	private String[] column = {"COUNTRY", "WIN", "LOST"};
 
 	
 	//コンストラクタ(画面構成を定義)
-	Result_Window(){
+	Result(){
 		setTitle("問い合わせ在庫 一覧表示");
 		setBounds(400,300,500,370);										//setBoundsで表示位置と大きさ指定
 	    setBackground(new Color(140,236,235));					//背景色指定
@@ -36,13 +37,17 @@ public abstract class Result_Window extends JFrame implements ActionListener {
 		partsLayout();																	//初期化③
 		addWindowListener(new WinAda());	
 		
+		DefaultTableModel tableModel = new DefaultTableModel(column, 0);
+		JTable table = new JTable(tableModel);
+		tableModel.addColumn(Zaiko.result_Column);
+
+	    add(table); 
+		
 	}
 	
 	
 	//パーツを生成、初期値を設定する
 	public void partsInitialize() {												
-		l_1 = new Label("商品ＣＤ");
-		l_2 = new Label("商品名");
 
 	}
 	
@@ -55,15 +60,12 @@ public abstract class Result_Window extends JFrame implements ActionListener {
 		l_1.setBounds(50,30,50,20);
 		l_2.setBounds(50,70,50,20);
 	}
-	
-	
-	
-	
-	//ウィンドウが閉じられた時の処理(クラス名以外、定型文)
-	class WinAda extends WindowAdapter {
-	    public void windowActivated(WindowEvent e) {
-	        System.out.println("windowActivated");
-	    }
+
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO 自動生成されたメソッド・スタブ
+		
 	}
 	
 }

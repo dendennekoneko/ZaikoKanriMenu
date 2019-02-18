@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 
 
 //ウィンドウのひな型
-public abstract class Mado extends JFrame implements ActionListener {
+public class Mado extends JFrame implements ActionListener {
 	
 	private static final long serialVersionUID = 1L;
 	
