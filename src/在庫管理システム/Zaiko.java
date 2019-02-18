@@ -6,9 +6,14 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 
 public class Zaiko extends Mado{
+	
+	private static final long serialVersionUID = 1L;
+		
+    static Connection conn;
 
 	static Statement st;										//SQL実行用インスタンス
 	static ResultSet rset;                                      //SQL結果格納用インスタンス
@@ -18,41 +23,45 @@ public class Zaiko extends Mado{
 	public static int get_shocd = 0;
 	public static String get_shoname = "";
 	
-	static boolean string_check_ok;
+	static boolean string_check_ok;								//DB内に存在しない文字列が入力されていないかチェック用
+	
+	public static ArrayList<ArrayList<String>> result_Column = new ArrayList<>();
+	public static ArrayList<String> result_Record = new ArrayList<>(3);
 	
     public static void main(String[] args) throws SQLException {
     	
-    	
         // (1) 接続用のURIを用意する(必要に応じて認証指示user/passwordを付ける)
-        String uri = "jdbc:postgresql://localhost:5432/sample";
+    	String uri = "jdbc:postgresql://localhost:5432/sample";
         String user = "postgres";
         String password = "1818";
         
         // (2) DriverManagerクラスのメソッドで接続する
-        Connection conn = DriverManager.getConnection(uri,user,password);
+        conn = DriverManager.getConnection(uri,user,password);
         
         // (3) SQL送信用インスタンスの作成
        st = conn.createStatement();
        
-       Zaiko z = new Zaiko();
+       //画面生成クラス(Superクラスのコンストラクタ)へ
+       new Zaiko();
         
         //updateSql(a);															//SQL書き換え
 
     }
     
-    public static void getSql() throws SQLException {									//SQL結果表示用メソッド 	
+    //SQL結果表示用メソッド 	
+    public static void getSql() throws SQLException {
     	
         selectSql = "SELECT * FROM hatzaiko ORDER BY shocd ASC";
         l_error.setText("");
         string_check_ok = false;
-        
+
     	rset = st.executeQuery(selectSql);
     	
         //まず無効な文字列が入っていないか確認する！！
     	if(!get_shoname.equals("")) {
             stringCheck();
             if(!string_check_ok) {
-            	l_error.setText("存在しない商品名が入力されています");
+            	l_error.setText("存在しない商品名が入力されています。");
             }
     	}else {
     		string_check_ok = true;
@@ -60,7 +69,6 @@ public class Zaiko extends Mado{
 
         //存在しない文字列エラーが出ていなければ
     	if(string_check_ok) {
-    		System.out.println("check院！");
             search();
     	}
         
@@ -68,6 +76,23 @@ public class Zaiko extends Mado{
     	if(l_error.getText().equals("")) {
     		
     		rset = st.executeQuery(selectSql);
+            
+            //レコードを取得
+    		while(rset.next()) {
+    			//レコード一行分を一時的に格納する１次元List(result_Record)にSQL結果を追加
+    			result_Record.add(String.valueOf(rset.getInt("shocd")));
+    			result_Record.add(rset.getString("shoname"));
+    			result_Record.add(String.valueOf(rset.getInt("zaisu")));
+    			
+    			@SuppressWarnings("unchecked")						//コンパイル警告の無効化。←警告が出るため
+    			
+    			//一時Listのクローンを作成する
+				ArrayList<String> cloneRecord = (ArrayList<String>) result_Record.clone();
+    			//表を格納する２次元List(result_Column)にresult_Recordのクローンを格納
+    			result_Column.add(cloneRecord);
+    			//一時Listをクリアし、次の行へ
+    			result_Record.clear();
+    		}
     		
             //カラム名を取得
             rsmd = rset.getMetaData();
@@ -75,24 +100,27 @@ public class Zaiko extends Mado{
                 System.out.print(rsmd.getColumnName(i)+"　：　");
              }
             System.out.println("");
-            
-            //レコードを取得
-            while(rset.next()) {
-            	System.out.print(rset.getInt("shocd") + "　　　　：　");
-            	System.out.print(rset.getString("shoname").trim() +"　　　：　");
-            	System.out.print(rset.getInt("zaisu"));       	
-            	System.out.println();
-            }
+
+            //結果描画
+        	for(ArrayList<String> a : result_Column) {
+        		for(String b : a) {
+        			System.out.print(b.trim() + "　：　");
+        		}
+        		System.out.println("");
+        	}
+
+        //エラーラベルに何らかのメッセージが入っている。
     	}else {
-    		System.out.println("エラーで終わりました");
+    		System.out.println("エラーで終わりました。");
     	}
     }
     
      //存在しない商品名が入力されていないか監視
-    public static void stringCheck() throws SQLException {									//SQL結果表示用メソッド 	
-
+    public static void stringCheck() throws SQLException {
+    	//商品名が入力されている
     	if(!get_shoname.equals("")) {
             while(rset.next()) {
+            	//入力された商品名と、SQL結果の商品名が一致する
             	if(rset.getString("shoname").trim().equals(get_shoname)) {
             		string_check_ok = true;
             		break;
@@ -103,7 +131,6 @@ public class Zaiko extends Mado{
     
     //入力された商品名が一致しているかチェック
     public static void search() throws SQLException {
-    	
     	//商品ＣＤが入力されている
     	if(get_shocd != 0) {
     		selectSql = "SELECT * FROM hatzaiko WHERE shocd="+get_shocd+"";
@@ -115,18 +142,17 @@ public class Zaiko extends Mado{
                 	if(rset.getString("shoname").trim().equals(get_shoname)) {
                 		break;
                 	}else {
-                    	l_error.setText("商品ＣＤと商品名が一致しません");
+                    	l_error.setText("商品ＣＤと商品名が一致しません。");
                     	break;
                 	}
                 }
             }
-         //商品ＣＤが入力され、商品名が入力されていない。
+         //商品名が入力されている。
     	}else if(!get_shoname.trim().equals("")){
             rset = st.executeQuery(selectSql);
     		while(rset.next()) {
         		//入力された商品名がDB上の商品名と一致している
             	if(rset.getString("shoname").trim().equals(get_shoname.trim())) {
-            		System.out.println("商品名一致？");
             		selectSql = "SELECT * FROM hatzaiko WHERE shoname like '%"+get_shoname+"%'";
             		break;
             	}

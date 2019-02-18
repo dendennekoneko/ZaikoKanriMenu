@@ -19,7 +19,7 @@ public abstract class Mado extends JFrame implements ActionListener {
 	
 	private static final long serialVersionUID = 1L;
 	
-	Button b_go;															//変数宣言をメソッドの外に書くことで、ActionPerformメソッドでインスタンスを呼び出せた
+	Button b_go;															
 	Label l_1,l_2;
 	static Label l_error;
 	JTextField t_shocd;
@@ -64,7 +64,7 @@ public abstract class Mado extends JFrame implements ActionListener {
 		l_2.setBounds(50,70,50,20);
 		t_shoname.setBounds(120,70,100,20);
 		b_go.setBounds(50,120,150,20);
-		l_error.setBounds(50,150,150,20);
+		l_error.setBounds(50,150,250,20);
 	}
 	
 	public void listenerSet() {													//リスナー設定用メソッド
