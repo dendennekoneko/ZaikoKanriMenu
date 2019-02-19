@@ -35,7 +35,6 @@ public class Zaiko_Search extends Windows implements ActionListener {
 	public void partsInitialize() {												
 		l_1 = new Label("商品ＣＤ");
 		t_shocd = new JTextField();
-		//t_shocd.setFont(new Font("SansSerif", Font.ITALIC, 15));
 		l_2 = new Label("商品名");
 		t_shoname = new JTextField();
 		b_go = new Button("実行");
@@ -66,9 +65,9 @@ public class Zaiko_Search extends Windows implements ActionListener {
 	
 	public void actionPerformed(ActionEvent e) {
 		try {
+	        l_error.setText("");
 			textScan();
 			Search_SQL sq = new Search_SQL();
-	        l_error.setText("");
 	        sq.string_check_ok = false;
 	        sq.int_check_ok = false;
 			sq.getSql();															//SQL結果表示

@@ -6,11 +6,9 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
-//SQL処理用メインクラス
-public class Search_SQL{
+//入荷SQL処理用メインクラス
+public class In_SQL{
 	
 	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 1L;
@@ -24,13 +22,12 @@ public class Search_SQL{
 	String selectSql;											//SQL文を格納する
 	public static int get_shocd = 0;					//入力された商品ＣＤ
 	public static String get_shoname = "";		//入力された商品名
+	public static int get_nyusu = 0;					//入力された出荷数
 	
 	boolean string_check_ok;					//DB内に存在しない文字列が入力されていないかチェック用
 	boolean int_check_ok;						//DB内に存在しない商品ＣＤが入力されていないかチェック用
 	
-	public static List<ArrayList<String>> result_Column = new ArrayList<>();			//二次元配列(DB結果を格納する表)
-	
-    Search_SQL() throws SQLException{
+    In_SQL() throws SQLException{
         // (1) 接続用のURIを用意する(必要に応じて認証指示user/passwordを付ける)
     	String uri = "jdbc:postgresql://localhost:5432/sample";
         String user = "postgres";
@@ -58,33 +55,17 @@ public class Search_SQL{
     	}
         
         //諸々のエラーが出ていなければ
-    	if(Zaiko_Search.l_error.getText().equals("") && int_check_ok && string_check_ok) {
+    	if(Zaiko_Nyuuka.l_error.getText().equals("") && int_check_ok && string_check_ok) {
         	//一覧表作成
-        	listGo();
+        	nyuuka();
+    		conn.close();
     	}
     }
 	//*****************************************************************************************
     //一覧表作成メソッド
-	public void listGo() throws SQLException {
-		rset = st.executeQuery(selectSql);
-        //レコードを取得
-		while(rset.next()) {
-			//@SuppressWarnings("unchecked")					//コンパイル警告の無効化。←警告が出るため
-			
-			//なぎせさん(ArrayList生成)
-			ArrayList<String> tempArray = new ArrayList<>();
-			
-			tempArray.add(String.valueOf(rset.getInt("shocd")));
-			tempArray.add(rset.getString("shoname"));
-			tempArray.add(String.valueOf(rset.getInt("zaisu")));
-
-			//二次元ListにtempArrayを追加
-			result_Column.add(tempArray);
-		}
-		
-		new Zaiko_List();
-		result_Column.clear();
-		conn.close();
+	public void nyuuka() throws SQLException {
+		st.executeUpdate(selectSql);
+		Zaiko_Nyuuka.l_result.setText(get_nyusu+"個、入荷されました");
 	}
     
     //存在しない商品ＣＤが入力されていないかチェック
@@ -100,7 +81,7 @@ public class Search_SQL{
             	}
             }
             if(!int_check_ok) {
-            	Zaiko_Search.l_error.setText("存在しない商品ＣＤが入力されています。");
+            	Zaiko_Nyuuka.l_error.setText("存在しない商品ＣＤが入力されています。");
             }
     	}else {
     		int_check_ok = true;
@@ -120,7 +101,7 @@ public class Search_SQL{
             	}
             }
             if(!string_check_ok) {
-            	Zaiko_Search.l_error.setText("存在しない商品名が入力されています。");
+            	Zaiko_Nyuuka.l_error.setText("存在しない商品名が入力されています。");
             }
     	}else {
     		string_check_ok = true;
@@ -138,12 +119,15 @@ public class Search_SQL{
                 while(rset.next()) {
                 	//入力された商品名がと、入力された商品ＣＤに対応する商品名が正しく一致している
                 	if(rset.getString("shoname").trim().equals(get_shoname)) {
+                		selectSql = "UPDATE hatzaiko SET zaisu = zaisu + "+get_nyusu+" WHERE shocd="+get_shocd+"";
                 		break;
                 	}else {
-                    	Zaiko_Search.l_error.setText("商品ＣＤと商品名が一致しません。");
+                    	Zaiko_Nyuuka.l_error.setText("商品ＣＤと商品名が一致しません。");
                     	break;
                 	}
                 }
+            }else {
+            	selectSql = "UPDATE hatzaiko SET zaisu = zaisu + "+get_nyusu+" WHERE shocd="+get_shocd+"";
             }
          //商品名のみ入力されている。
     	}else {
@@ -152,10 +136,12 @@ public class Search_SQL{
         		while(rset.next()) {
             		//入力された商品名がDB上の商品名と一致している
                 	if(rset.getString("shoname").trim().equals(get_shoname)) {
-                		selectSql = "SELECT * FROM hatzaiko WHERE shoname like '%"+get_shoname+"%'";
+                		selectSql = "UPDATE hatzaiko SET zaisu = zaisu + "+get_nyusu+" WHERE shoname LIKE '%"+get_shoname+"%'";
                 		break;
                 	}
         		}
+    		}else {
+    			selectSql = "UPDATE hatzaiko SET zaisu = zaisu + "+get_nyusu+"";
     		}
     	}
     }
