@@ -14,7 +14,7 @@ public class Zaiko_List extends Windows {
 	private static final long serialVersionUID = 1L;
 	
 	private String[] column = {"商品ＣＤ", "商品名", "在庫数"};
-	String[][] table_Column = new String[SQL.result_Column.size()][3];
+	String[][] table_Column = new String[Search_SQL.result_Column.size()][3];
 
 	//コンストラクタ(画面構成を定義)
 	Zaiko_List(){
@@ -23,13 +23,13 @@ public class Zaiko_List extends Windows {
 		
 		DefaultTableModel tableModel = new DefaultTableModel(column,0);
 		JTable table = new JTable(tableModel);
-		for(int i = 0 ; i < SQL.result_Column.size(); i++) {
+		for(int i = 0 ; i < Search_SQL.result_Column.size(); i++) {
 			for(int j = 0;j < 3;j++) {
-				table_Column[i][j] = SQL.result_Column.get(i).get(j); 
+				table_Column[i][j] = Search_SQL.result_Column.get(i).get(j); 
 			}
 		}
 		
-		for(int i = 0 ; i < SQL.result_Column.size() ; i++){
+		for(int i = 0 ; i < Search_SQL.result_Column.size() ; i++){
 		      tableModel.addRow(table_Column[i]);
 		}
 		

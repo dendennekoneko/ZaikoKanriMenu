@@ -82,14 +82,13 @@ public class Zaiko_Nyuuka extends Windows implements ActionListener {
 		
 		//チェックされた真偽値によって、グローバル変数get_shocdに数値を代入
 		if(t_shocd_is_num) {
-			SQL.get_shocd = Integer.parseInt(t_shocd.getText());
+			Search_SQL.get_shocd = Integer.parseInt(t_shocd.getText());
 		}else {
-			SQL.get_shocd = 0;
+			Search_SQL.get_shocd = 0;
 		}
 		
 		//商品名テキストフィールドに文字列が入力されているかチェック
-		SQL.get_shoname = t_shoname.getText();
-
+		Search_SQL.get_shoname = t_shoname.getText();
 	}
 	
 	//商品ＣＤテキストフィールドに数値が入力されたか例外処理でチェック

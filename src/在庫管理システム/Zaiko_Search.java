@@ -67,7 +67,10 @@ public class Zaiko_Search extends Windows implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		try {
 			textScan();
-			SQL sq = new SQL();
+			Search_SQL sq = new Search_SQL();
+	        l_error.setText("");
+	        sq.string_check_ok = false;
+	        sq.int_check_ok = false;
 			sq.getSql();															//SQL結果表示
 		} catch (SQLException e1) {
 			// TODO 自動生成された catch ブロック
@@ -83,12 +86,19 @@ public class Zaiko_Search extends Windows implements ActionListener {
 		
 		//チェックされた真偽値によって、グローバル変数get_shocdに数値を代入
 		if(t_shocd_is_num) {
-			SQL.get_shocd = Integer.parseInt(t_shocd.getText());
+			Search_SQL.get_shocd = Integer.parseInt(t_shocd.getText());
 		}else {
-			SQL.get_shocd = 0;
+			//商品ＣＤが空白の場合（正常）
+			if(t_shocd.getText().equals("")) {
+				Search_SQL.get_shocd = 0;
+			//商品ＣＤが数値でも空白でも無い場合（異常）
+			}else {
+				l_error.setText("存在しない商品ＣＤが入力されています。");
+				Search_SQL.get_shocd = 0;
+			}
 		}
 		//商品名テキストフィールドに文字列が入力されているかチェック
-		SQL.get_shoname = t_shoname.getText();
+		Search_SQL.get_shoname = t_shoname.getText();
 	}
 	
 	//商品ＣＤテキストフィールドに数値が入力されたか例外処理でチェック

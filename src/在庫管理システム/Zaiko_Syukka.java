@@ -35,7 +35,6 @@ public class Zaiko_Syukka extends Windows implements ActionListener {
 	public void partsInitialize() {												
 		l_1 = new Label("商品ＣＤ");
 		t_shocd = new JTextField();
-		//t_shocd.setFont(new Font("SansSerif", Font.ITALIC, 15));
 		l_2 = new Label("商品名");
 		t_shoname = new JTextField();
 		b_go = new Button("実行");
@@ -67,29 +66,37 @@ public class Zaiko_Syukka extends Windows implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		try {
 			textScan();
-			//Zaiko.getSql();															//SQL結果表示
+			InOut_SQL sq_syukka = new InOut_SQL();
+	        l_error.setText("");
+	        sq_syukka.string_check_ok = false;
+	        sq_syukka.int_check_ok = false;
+			sq_syukka.getSql();															//SQL結果表示
 		} catch (SQLException e1) {
-			// TODO 自動生成された catch ブロック
 			e1.printStackTrace();
 		}
 	}
 	
-	public void textScan() throws SQLException {
-		
+	public void textScan() {
 		//商品ＣＤテキストフィールドに数値が入れられたチェック
 		boolean t_shocd_is_num;
 		t_shocd_is_num = isNumber(t_shocd.getText());
 		
 		//チェックされた真偽値によって、グローバル変数get_shocdに数値を代入
 		if(t_shocd_is_num) {
-			SQL.get_shocd = Integer.parseInt(t_shocd.getText());
+			Search_SQL.get_shocd = Integer.parseInt(t_shocd.getText());
 		}else {
-			SQL.get_shocd = 0;
+			//商品ＣＤが空白の場合（正常）
+			if(t_shocd.getText().equals("")) {
+				Search_SQL.get_shocd = 0;
+			//商品ＣＤが数値でも空白でも無い場合（異常）
+			}else {
+				l_error.setText("存在しない商品ＣＤが入力されています。");
+				Search_SQL.get_shocd = 0;
+			}
 		}
 		
-		//商品名テキストフィールドに文字列が入力されているかチェック
-		SQL.get_shoname = t_shoname.getText();
-
+		//商品名は無条件で代入
+		Search_SQL.get_shoname = t_shoname.getText();
 	}
 	
 	//商品ＣＤテキストフィールドに数値が入力されたか例外処理でチェック
@@ -101,9 +108,4 @@ public class Zaiko_Syukka extends Windows implements ActionListener {
 	        return false;
 	    }
 	}
-	
-	public static void errorLabel() {
-		l_error.setText("商品ＣＤと商品名が一致しません");
-	}
-	
 }
