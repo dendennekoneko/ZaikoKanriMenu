@@ -5,9 +5,7 @@ import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 
-import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 
 
@@ -77,7 +75,7 @@ public class Zaiko_Search extends Windows implements ActionListener {
 		}
 	}
 	
-	public void textScan() throws SQLException {
+	public void textScan() {
 		
 		//商品ＣＤテキストフィールドに数値が入れられたチェック
 		boolean t_shocd_is_num;
@@ -89,10 +87,8 @@ public class Zaiko_Search extends Windows implements ActionListener {
 		}else {
 			SQL.get_shocd = 0;
 		}
-		
 		//商品名テキストフィールドに文字列が入力されているかチェック
 		SQL.get_shoname = t_shoname.getText();
-
 	}
 	
 	//商品ＣＤテキストフィールドに数値が入力されたか例外処理でチェック
@@ -104,9 +100,4 @@ public class Zaiko_Search extends Windows implements ActionListener {
 	        return false;
 	    }
 	}
-	
-	public static void errorLabel() {
-		l_error.setText("商品ＣＤと商品名が一致しません");
-	}
-	
 }

@@ -53,6 +53,8 @@ public class SQL{
 
     	rset = st.executeQuery(selectSql);
     	
+
+    	
         //まず無効な文字列が入っていないか確認する！！
     	if(!get_shoname.equals("")) {
             stringCheck();
@@ -115,7 +117,6 @@ public class SQL{
     }
     //*****************************************************************************************
     
-    
      //存在しない商品名が入力されていないかチェック
     public void stringCheck() throws SQLException {
     	//商品名が入力されている
@@ -148,13 +149,13 @@ public class SQL{
                 	}
                 }
             }
-         //商品名が入力されている。
+         //商品名のみ入力されている。
     	}else {
     		if(!get_shoname.trim().equals("")){
                 rset = st.executeQuery(selectSql);
         		while(rset.next()) {
             		//入力された商品名がDB上の商品名と一致している
-                	if(rset.getString("shoname").trim().equals(get_shoname.trim())) {
+                	if(rset.getString("shoname").trim().equals(get_shoname)) {
                 		selectSql = "SELECT * FROM hatzaiko WHERE shoname like '%"+get_shoname+"%'";
                 		break;
                 	}
