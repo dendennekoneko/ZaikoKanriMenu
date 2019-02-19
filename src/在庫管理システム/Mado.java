@@ -1,21 +1,16 @@
 package 在庫管理システム;
 
 import java.awt.Button;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 
-import javax.swing.JFrame;
 import javax.swing.JTextField;
 
 
 //ウィンドウのひな型
-public class Mado extends JFrame implements ActionListener {
+public class Mado extends Windows implements ActionListener {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -28,14 +23,12 @@ public class Mado extends JFrame implements ActionListener {
 	//コンストラクタ(画面構成を定義)
 	Mado(){
 		setTitle("在庫問い合わせ");
-		setBounds(400,300,500,370);										//setBoundsで表示位置と大きさ指定
-	    setBackground(new Color(140,236,235));					//背景色指定
-		setVisible(true);															//フレーム有効化(定型文として覚える)
+		setBounds(400,300,500,370);										//setBoundsで表示位置と大きさ指定		
+		
 		partsInitialize();																//初期化①
 		partsSet();																		//初期化②
 		partsLayout();																	//初期化③
 		listenerSet();																	//初期化④
-		addWindowListener(new WinAda());	
 	}
 
 	//パーツを生成、初期値を設定する
@@ -111,17 +104,6 @@ public class Mado extends JFrame implements ActionListener {
 	
 	public static void errorLabel() {
 		l_error.setText("商品ＣＤと商品名が一致しません");
-	}
-	
-	
-	
-	
-	
-	//ウィンドウが閉じられた時の処理(クラス名以外、定型文)
-	class WinAda extends WindowAdapter {
-	    public void windowActivated(WindowEvent e) {
-	        System.out.println("windowActivated");
-	    }
 	}
 	
 }

@@ -9,25 +9,28 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-
+//SQL処理用メインクラス
 public class Zaiko{
 	
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 1L;
 		
-    static Connection conn;
+    static Connection conn;								//SQL接続インスタンス
 
 	static Statement st;										//SQL実行用インスタンス
-	static ResultSet rset;                                      //SQL結果格納用インスタンス
-	static ResultSetMetaData rsmd;
+	static ResultSet rset;                                    //SQL結果格納用インスタンス
+	static ResultSetMetaData rsmd;					//SQLカラム名取得用インスタンス	
 	
-	static String selectSql;
-	public static int get_shocd = 0;
-	public static String get_shoname = "";
+	static String selectSql;									//SQL文を格納する
+	public static int get_shocd = 0;					//入力された商品ＣＤ
+	public static String get_shoname = "";		//入力された商品名
 	
-	static boolean string_check_ok;								//DB内に存在しない文字列が入力されていないかチェック用
+	static boolean string_check_ok;					//DB内に存在しない文字列が入力されていないかチェック用
 	
 	public static List<ArrayList<String>> result_Column = new ArrayList<>();			//二次元配列(DB結果を格納する表)
 	
+	
+	//******************************************************************************************
     public static void main(String[] args) throws SQLException {
     	
         // (1) 接続用のURIを用意する(必要に応じて認証指示user/passwordを付ける)
@@ -42,11 +45,13 @@ public class Zaiko{
        st = conn.createStatement();
        
        //画面生成クラス(Superクラスのコンストラクタ)へ
-       Mado m = new Mado();
-        
+       new Mado();
+       
         //updateSql(a);															//SQL書き換え
 
     }
+  //******************************************************************************************
+    
     
     //SQL結果表示用メソッド 	
     public static void getSql() throws SQLException {
@@ -92,7 +97,7 @@ public class Zaiko{
     			result_Column.add(tempArray);
     		}
     		
-    		//Result res = new Result();
+    		new Result();
     		
             //カラム名を取得
             rsmd = rset.getMetaData();
@@ -115,7 +120,7 @@ public class Zaiko{
     	}
     }
     
-     //存在しない商品名が入力されていないか監視
+     //存在しない商品名が入力されていないかチェック
     public static void stringCheck() throws SQLException {
     	//商品名が入力されている
     	if(!get_shoname.equals("")) {
