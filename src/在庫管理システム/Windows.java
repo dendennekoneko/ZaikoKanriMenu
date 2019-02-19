@@ -14,15 +14,6 @@ public abstract class Windows extends JFrame {
 	Windows(){
 		setVisible(true);															//フレーム有効化(定型文として覚える)　※
 	}
-	
-	//パーツを生成、初期値を設定する
-	public abstract void partsInitialize();
-	
-	//パーツを順番にフレームに配置する
-	public abstract void partsSet();
-	
-	//パーツの配置を手動設定
-	public abstract void partsLayout();
 
 	//ウィンドウが閉じられた時の処理(クラス名以外、定型文)
 	class WinAda extends WindowAdapter {

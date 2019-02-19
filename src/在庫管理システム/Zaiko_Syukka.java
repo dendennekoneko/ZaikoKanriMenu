@@ -9,8 +9,8 @@ import java.sql.SQLException;
 import javax.swing.JTextField;
 
 
-//ウィンドウのひな型
-public class Mado extends Windows implements ActionListener {
+//在庫出荷画面。Windowsクラスの子供
+public class Zaiko_Syukka extends Windows implements ActionListener {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -21,8 +21,8 @@ public class Mado extends Windows implements ActionListener {
 	JTextField t_shoname;
 	
 	//コンストラクタ(画面構成を定義)
-	Mado(){
-		setTitle("在庫問い合わせ");
+	Zaiko_Syukka(){
+		setTitle("在庫出荷");
 		setBounds(400,300,500,370);										//setBoundsで表示位置と大きさ指定		
 		
 		partsInitialize();																//初期化①
@@ -67,7 +67,7 @@ public class Mado extends Windows implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		try {
 			textScan();
-			Zaiko.getSql();															//SQL結果表示
+			//Zaiko.getSql();															//SQL結果表示
 		} catch (SQLException e1) {
 			// TODO 自動生成された catch ブロック
 			e1.printStackTrace();
@@ -82,13 +82,13 @@ public class Mado extends Windows implements ActionListener {
 		
 		//チェックされた真偽値によって、グローバル変数get_shocdに数値を代入
 		if(t_shocd_is_num) {
-			Zaiko.get_shocd = Integer.parseInt(t_shocd.getText());
+			SQL.get_shocd = Integer.parseInt(t_shocd.getText());
 		}else {
-			Zaiko.get_shocd = 0;
+			SQL.get_shocd = 0;
 		}
 		
 		//商品名テキストフィールドに文字列が入力されているかチェック
-		Zaiko.get_shoname = t_shoname.getText();
+		SQL.get_shoname = t_shoname.getText();
 
 	}
 	
