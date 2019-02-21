@@ -16,11 +16,13 @@ public class Zaiko_Menu extends Windows implements ActionListener {
 	Zaiko_Menu(){
 		setTitle("在庫メニュー");
 		setBounds(400,300,300,230);										//setBoundsで表示位置と大きさ指定		
+		setLocationRelativeTo(null);											//画面中央に表示
 		getContentPane().setLayout(null);									//パーツ配置設定
 		partsInitialize();																//初期化①
 		partsSet();																		//初期化②
 		partsLayout();																	//初期化③
 		listenerSet();																	//初期化④
+		setVisible(true);
 	}
 
 	//パーツを生成、初期値を設定する

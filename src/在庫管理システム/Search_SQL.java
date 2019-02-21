@@ -1,5 +1,7 @@
 package 在庫管理システム;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -21,7 +23,7 @@ public class Search_SQL{
 	ResultSet rset;                                   			 //SQL結果格納用インスタンス
 	ResultSetMetaData rsmd;							//SQLカラム名取得用インスタンス	
 	
-	String selectSql;											//SQL文を格納する
+	static String selectSql;									//SQL文を格納する
 	public static int get_shocd = 0;					//入力された商品ＣＤ
 	public static String get_shoname = "";		//入力された商品名
 	
@@ -30,6 +32,7 @@ public class Search_SQL{
 	
 	public static List<ArrayList<String>> result_Column = new ArrayList<>();			//二次元配列(DB結果を格納する表)
 	
+	//コンストラクタ、在庫検索が入力されたタイミングでＤＢ接続
     Search_SQL() throws SQLException{
         // (1) 接続用のURIを用意する(必要に応じて認証指示user/passwordを付ける)
     	String uri = "jdbc:postgresql://localhost:5432/sample";
@@ -43,34 +46,39 @@ public class Search_SQL{
         st = conn.createStatement();
     }
     
-    //SQL結果一覧表示用メソッド 	********************************************************************
+    //SQL結果一覧表示用メソッド
     public void getSql() throws SQLException {
         selectSql = "SELECT * FROM hatzaiko ORDER BY shocd ASC";
     	
+        //商品ＣＤが正しく入力されているかチェック
     	intCheck();
+    	//商品ＣＤが問題なければ
     	if(int_check_ok) {
+    		//商品名が正しく入力されているかチェック
     		stringCheck();
     	}
 
         //存在しない文字列エラーが出ていなければ
     	if(string_check_ok && int_check_ok) {
+    		//入力された検索条件に従い、SQL実行メソッドlistGo()で必要なSQL文を確定する。
             search();
     	}
         
         //諸々のエラーが出ていなければ
-    	if(Zaiko_Search.l_error.getText().equals("") && int_check_ok && string_check_ok) {
-        	//一覧表作成
+    	if(Zaiko_Search.l_error_syu.getText().equals("") && int_check_ok && string_check_ok) {
+        	//SQL実行＆一覧表作成
         	listGo();
     	}
     }
-	//*****************************************************************************************
+    
     //一覧表作成メソッド
 	public void listGo() throws SQLException {
+		
+		//選択SQL実行
 		rset = st.executeQuery(selectSql);
+		
         //レコードを取得
 		while(rset.next()) {
-			//@SuppressWarnings("unchecked")					//コンパイル警告の無効化。←警告が出るため
-			
 			//なぎせさん(ArrayList生成)
 			ArrayList<String> tempArray = new ArrayList<>();
 			
@@ -82,14 +90,19 @@ public class Search_SQL{
 			result_Column.add(tempArray);
 		}
 		
-		new Zaiko_List();
-		result_Column.clear();
-		conn.close();
+		//在庫一覧表が開いていない
+		if(!Zaiko_List.paint_now) {
+			//在庫一覧表インスタンス生成
+			new Zaiko_List();
+			//在庫一覧表のJTable配列に代入できたため、二次元配列をクリアする
+			Search_SQL.result_Column.clear();
+			conn.close();
+		}
 	}
     
     //存在しない商品ＣＤが入力されていないかチェック
     public void intCheck() throws SQLException {
-    	//存在しない商品CDが入力されていないかチェック
+    	//商品ＣＤが入力されている
     	if(get_shocd!=0) {
         	rset = st.executeQuery(selectSql);
             while(rset.next()) {
@@ -99,9 +112,11 @@ public class Search_SQL{
             		break;
             	}
             }
+            //入力された商品ＣＤが不正
             if(!int_check_ok) {
-            	Zaiko_Search.l_error.setText("存在しない商品ＣＤが入力されています。");
+            	Zaiko_Search.l_error_syu.setText("存在しない商品ＣＤが入力されています。");
             }
+        //そもそも商品ＣＤが入力されていなかった、もしくは０なら
     	}else {
     		int_check_ok = true;
     	}
@@ -109,7 +124,7 @@ public class Search_SQL{
     
      //存在しない商品名が入力されていないかチェック
     public void stringCheck() throws SQLException {
-        //無効な商品名が入っていないか確認する！！
+        //商品名が入力されている
     	if(!get_shoname.equals("")) {
         	rset = st.executeQuery(selectSql);
             while(rset.next()) {
@@ -119,9 +134,11 @@ public class Search_SQL{
             		break;
             	}
             }
+            //入力された商品名が不正
             if(!string_check_ok) {
-            	Zaiko_Search.l_error.setText("存在しない商品名が入力されています。");
+            	Zaiko_Search.l_error_syu.setText("存在しない商品名が入力されています。");
             }
+        //そもそも商品名が入力されていなかったら
     	}else {
     		string_check_ok = true;
     	}
@@ -140,7 +157,7 @@ public class Search_SQL{
                 	if(rset.getString("shoname").trim().equals(get_shoname)) {
                 		break;
                 	}else {
-                    	Zaiko_Search.l_error.setText("商品ＣＤと商品名が一致しません。");
+                    	Zaiko_Search.l_error_syu.setText("商品ＣＤと商品名が一致しません。");
                     	break;
                 	}
                 }
@@ -159,4 +176,16 @@ public class Search_SQL{
     		}
     	}
     }
+    
+	//ウィンドウが閉じられた時の処理、オーバーライド←そもそも親クラスにこのメソッド必要ない・・・
+	class WinAda extends WindowAdapter{
+	    public void windowClosing(WindowEvent e) {
+			try {
+				//データベース接続を切断
+				conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+	    }
+	}
 }

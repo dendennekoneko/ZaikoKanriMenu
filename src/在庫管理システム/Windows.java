@@ -5,6 +5,7 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
+
 //ウィンドウのひな型
 public abstract class Windows extends JFrame {
 	
@@ -12,13 +13,13 @@ public abstract class Windows extends JFrame {
 
 	//コンストラクタ(画面構成を定義)
 	Windows(){
-		setVisible(true);															//フレーム有効化(定型文として覚える)　※
+		//setVisible(true);															//フレーム有効化(定型文として覚える)　※
+		addWindowListener(new WinAda());
 	}
 
-	//ウィンドウが閉じられた時の処理(クラス名以外、定型文)
+	//ウィンドウが閉じられた時の処理(クラス名以外、定型文)いらない・・・・
 	class WinAda extends WindowAdapter {
 	    public void windowActivated(WindowEvent e) {
-	        System.out.println("windowActivated");
 	    }
 	}
 }

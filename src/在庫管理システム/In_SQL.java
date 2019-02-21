@@ -55,7 +55,7 @@ public class In_SQL{
     	}
         
         //諸々のエラーが出ていなければ
-    	if(Zaiko_Nyuuka.l_error.getText().equals("") && int_check_ok && string_check_ok) {
+    	if(Zaiko_Nyuuka.l_error_n.getText().equals("") && int_check_ok && string_check_ok) {
         	//一覧表作成
         	nyuuka();
     		conn.close();
@@ -81,7 +81,7 @@ public class In_SQL{
             	}
             }
             if(!int_check_ok) {
-            	Zaiko_Nyuuka.l_error.setText("存在しない商品ＣＤが入力されています。");
+            	Zaiko_Nyuuka.l_error_n.setText("存在しない商品ＣＤが入力されています。");
             }
     	}else {
     		int_check_ok = true;
@@ -101,7 +101,7 @@ public class In_SQL{
             	}
             }
             if(!string_check_ok) {
-            	Zaiko_Nyuuka.l_error.setText("存在しない商品名が入力されています。");
+            	Zaiko_Nyuuka.l_error_n.setText("存在しない商品名が入力されています。");
             }
     	}else {
     		string_check_ok = true;
@@ -122,7 +122,7 @@ public class In_SQL{
                 		selectSql = "UPDATE hatzaiko SET zaisu = zaisu + "+get_nyusu+" WHERE shocd="+get_shocd+"";
                 		break;
                 	}else {
-                    	Zaiko_Nyuuka.l_error.setText("商品ＣＤと商品名が一致しません。");
+                    	Zaiko_Nyuuka.l_error_n.setText("商品ＣＤと商品名が一致しません。");
                     	break;
                 	}
                 }

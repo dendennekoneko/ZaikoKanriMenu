@@ -16,7 +16,7 @@ public class Zaiko_Syukka extends Windows implements ActionListener {
 	
 	Button b_go;															
 	Label l_1,l_2,l_3;
-	static Label l_error,l_result;
+	static Label l_error_s,l_result;
 	JTextField t_shocd;
 	JTextField t_shoname;
 	JTextField t_syusu;
@@ -25,11 +25,13 @@ public class Zaiko_Syukka extends Windows implements ActionListener {
 	Zaiko_Syukka(){
 		getContentPane().setLayout(null);								//パーツ配置設定(不要かも)
 		setTitle("在庫出荷");
-		setBounds(300,250,350,350);										//setBoundsで表示位置と大きさ指定		
+		setBounds(300,250,350,270);										//setBoundsで表示位置と大きさ指定		
+		setLocationRelativeTo(null);											//画面中央に表示
 		partsInitialize();																//初期化①
 		partsSet();																		//初期化②
 		partsLayout();																	//初期化③
 		listenerSet();																	//初期化④
+		setVisible(true);
 	}
 
 	//パーツを生成、初期値を設定する
@@ -41,7 +43,7 @@ public class Zaiko_Syukka extends Windows implements ActionListener {
 		l_3 = new Label("出荷数");
 		t_syusu = new JTextField();
 		b_go = new Button("実行");
-		l_error = new Label("");
+		l_error_s = new Label("");
 		l_result = new Label("");
 	}
 	
@@ -53,7 +55,7 @@ public class Zaiko_Syukka extends Windows implements ActionListener {
 		getContentPane().add(l_3);
 		getContentPane().add(t_syusu);
 		getContentPane().add(b_go);
-		getContentPane().add(l_error);
+		getContentPane().add(l_error_s);
 		getContentPane().add(l_result);
 	}
 	
@@ -65,8 +67,8 @@ public class Zaiko_Syukka extends Windows implements ActionListener {
 		l_3.setBounds(70,110,50,20);
 		t_syusu.setBounds(140,110,100,20);
 		b_go.setBounds(70,150,150,20);
-		l_error.setBounds(50,220,250,20);
-		l_result.setBounds(50,240,250,20);
+		l_error_s.setBounds(70,180,250,20);
+		l_result.setBounds(70,200,250,20);
 	}
 	
 	public void listenerSet() {													//リスナー設定用メソッド
@@ -75,7 +77,7 @@ public class Zaiko_Syukka extends Windows implements ActionListener {
 	
 	public void actionPerformed(ActionEvent e) {
 		try {
-	        l_error.setText("");
+	        l_error_s.setText("");
 	        l_result.setText("");
 			textScan();
 			suryoScan();
@@ -99,11 +101,11 @@ public class Zaiko_Syukka extends Windows implements ActionListener {
 		}else {
 			//商品ＣＤが空白の場合（正常）
 			if(t_syusu.getText().equals("")) {
-				l_error.setText("出荷数が空欄になっています");
+				l_error_s.setText("出荷数が空欄になっています");
 				Out_SQL.get_syusu = 0;
 			//商品ＣＤが数値でも空白でも無い場合（異常）
 			}else {
-				l_error.setText("数量を正しく入力してください");
+				l_error_s.setText("数量を正しく入力してください");
 				Out_SQL.get_syusu = 0;
 			}
 		}
@@ -123,7 +125,7 @@ public class Zaiko_Syukka extends Windows implements ActionListener {
 				Out_SQL.get_shocd = 0;
 			//商品ＣＤが数値でも空白でも無い場合（異常）
 			}else {
-				l_error.setText("存在しない商品ＣＤが入力されています。");
+				l_error_s.setText("存在しない商品ＣＤが入力されています。");
 				Out_SQL.get_shocd = 0;
 			}
 		}

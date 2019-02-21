@@ -55,7 +55,7 @@ public class Out_SQL{
     	}
 
         //諸々のエラーが出ていなければ
-    	if(Zaiko_Syukka.l_error.getText().equals("") && int_check_ok && string_check_ok) {
+    	if(Zaiko_Syukka.l_error_s.getText().equals("") && int_check_ok && string_check_ok) {
         	//一覧表作成
         	syukka();
     		conn.close();
@@ -64,7 +64,6 @@ public class Out_SQL{
 	//*****************************************************************************************
     //一覧表作成メソッド
 	public void syukka() throws SQLException {
-		System.out.println("出荷できる？");
 		st.executeUpdate(selectSql);
 		Zaiko_Syukka.l_result.setText(get_syusu+"個、出荷されました");
 	}
@@ -82,7 +81,7 @@ public class Out_SQL{
             	}
             }
             if(!int_check_ok) {
-            	Zaiko_Syukka.l_error.setText("存在しない商品ＣＤが入力されています。");
+            	Zaiko_Syukka.l_error_s.setText("存在しない商品ＣＤが入力されています。");
             }
     	}else {
     		int_check_ok = true;
@@ -102,7 +101,7 @@ public class Out_SQL{
             	}
             }
             if(!string_check_ok) {
-            	Zaiko_Syukka.l_error.setText("存在しない商品名が入力されています。");
+            	Zaiko_Syukka.l_error_s.setText("存在しない商品名が入力されています。");
             }
     	}else {
     		string_check_ok = true;
@@ -123,7 +122,7 @@ public class Out_SQL{
                 		selectSql = "UPDATE hatzaiko SET zaisu = zaisu - "+get_syusu+" WHERE shocd="+get_shocd+"";
                 		break;
                 	}else {
-                    	Zaiko_Syukka.l_error.setText("商品ＣＤと商品名が一致しません。");
+                    	Zaiko_Syukka.l_error_s.setText("商品ＣＤと商品名が一致しません。");
                     	break;
                 	}
                 }

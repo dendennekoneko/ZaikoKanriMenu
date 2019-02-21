@@ -16,19 +16,22 @@ public class Zaiko_Search extends Windows implements ActionListener {
 	
 	Button b_go;															
 	Label l_1,l_2;
-	static Label l_error;
+	static Label l_error_syu;
 	JTextField t_shocd;
 	JTextField t_shoname;
 	
 	//コンストラクタ(画面構成を定義)
 	Zaiko_Search(){
+		getContentPane().setLayout(null);								//パーツ配置設定(不要かも)
 		setTitle("在庫問い合わせ");
-		setBounds(400,300,500,370);										//setBoundsで表示位置と大きさ指定		
+		setBounds(300,250,350,230);										//setBoundsで表示位置と大きさ指定		
+		setLocationRelativeTo(null);											//画面中央に表示
 		
 		partsInitialize();																//初期化①
 		partsSet();																		//初期化②
 		partsLayout();																	//初期化③
 		listenerSet();																	//初期化④
+		setVisible(true);
 	}
 
 	//パーツを生成、初期値を設定する
@@ -38,7 +41,7 @@ public class Zaiko_Search extends Windows implements ActionListener {
 		l_2 = new Label("商品名");
 		t_shoname = new JTextField();
 		b_go = new Button("実行");
-		l_error = new Label("");
+		l_error_syu = new Label("");
 	}
 	
 	public void partsSet() {														//パーツを順番にフレームに配置する
@@ -47,16 +50,16 @@ public class Zaiko_Search extends Windows implements ActionListener {
 		getContentPane().add(l_2);
 		getContentPane().add(t_shoname);
 		getContentPane().add(b_go);
-		getContentPane().add(l_error);
+		getContentPane().add(l_error_syu);
 	}
 	
 	public void partsLayout() {												//パーツの配置を手動設定
-		l_1.setBounds(50,30,50,20);
-		t_shocd.setBounds(120,30,50,20);
-		l_2.setBounds(50,70,50,20);
-		t_shoname.setBounds(120,70,100,20);
-		b_go.setBounds(50,120,150,20);
-		l_error.setBounds(50,150,250,20);
+		l_1.setBounds(70,30,50,20);
+		t_shocd.setBounds(140,30,50,20);
+		l_2.setBounds(70,70,50,20);
+		t_shoname.setBounds(140,70,100,20);
+		b_go.setBounds(70,110,150,20);
+		l_error_syu.setBounds(70,140,250,20);
 	}
 	
 	public void listenerSet() {													//リスナー設定用メソッド
@@ -65,7 +68,7 @@ public class Zaiko_Search extends Windows implements ActionListener {
 	
 	public void actionPerformed(ActionEvent e) {
 		try {
-	        l_error.setText("");
+	        l_error_syu.setText("");
 			textScan();
 			Search_SQL sq = new Search_SQL();
 	        sq.string_check_ok = false;
@@ -92,7 +95,7 @@ public class Zaiko_Search extends Windows implements ActionListener {
 				Search_SQL.get_shocd = 0;
 			//商品ＣＤが数値でも空白でも無い場合（異常）
 			}else {
-				l_error.setText("存在しない商品ＣＤが入力されています。");
+				l_error_syu.setText("存在しない商品ＣＤが入力されています。");
 				Search_SQL.get_shocd = 0;
 			}
 		}
